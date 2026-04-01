@@ -1,7 +1,6 @@
-package random;
+package user;
 
 import com.github.javafaker.Faker;
-import user.User;
 
 public class Main {
     public static void main(String[] args) {

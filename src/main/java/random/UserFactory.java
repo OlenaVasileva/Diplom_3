@@ -5,7 +5,7 @@ import com.github.javafaker.Faker;
 import user.User;
 
 
-public class Utils { private static final Faker FAKER = new Faker();
+public class UserFactory { private static final Faker FAKER = new Faker();
 
     public static User createRandom() {
         return User.builder()
