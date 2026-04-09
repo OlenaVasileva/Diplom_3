@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static constants.TestConstants.BASE_URL;
+
 public class ConstructorPage {
-    final String url = "https://stellarburgers.education-services.ru/";
+
     private final WebDriver webDriver;
 
     private final By createBurger = By.xpath("//h1[text()='Соберите бургер']");
@@ -21,7 +23,7 @@ public class ConstructorPage {
     }
 
     public ConstructorPage open() {
-        webDriver.get(url);
+        webDriver.get(BASE_URL);
         return this;
     }
 

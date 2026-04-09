@@ -8,6 +8,7 @@ public class Main {
         User user = User.builder()
                 .name(faker.name().name())
                 .password(faker.internet().password(6, 20))
+                .password(faker.internet().password(1,3))
                 .email(faker.internet().safeEmailAddress())
                 .build();
 

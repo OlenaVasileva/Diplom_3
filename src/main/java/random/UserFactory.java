@@ -12,6 +12,7 @@ public class UserFactory { private static final Faker FAKER = new Faker();
                 .name(FAKER.name().name())
                 .email(FAKER.internet().safeEmailAddress())
                 .password(FAKER.internet().password(6, 20))
+                .negativePassword(FAKER.internet().password(1,3))
                 .build();
     }
 }

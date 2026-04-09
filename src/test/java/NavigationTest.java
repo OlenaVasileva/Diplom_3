@@ -24,22 +24,23 @@ public class NavigationTest {
     private ApiUser apiUser = new ApiUser();
     private User user;
     private AppConfig appConfig;
+    private String accessToken;
 
 
     @BeforeEach
     public void setUp() {
         String browser = System.getProperty("browser", "chrome");
         appConfig = ConfigFactory.create(AppConfig.class, Map.of("env", browser));
-        RestAssured.baseURI= "https://stellarburgers.education-services.ru";
+
 
         webDriver = new Browser().getWebDriver(browser);
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
 
         this.user = UserFactory.createRandom();
-        Response response = (Response) apiUser.createNewUserStep(this.user);
-        assertEquals(200, response.statusCode(), "Не удалось создать пользователя через API");
-
+        Response createResponse = apiUser.createNewUserStep(this.user);
+        assertEquals(200, createResponse.statusCode(), "Не удалось создать пользователя через API");
+        this.accessToken = createResponse.jsonPath().getString("accessToken");
     }
 
     @Test
@@ -86,6 +87,11 @@ public class NavigationTest {
 
     @AfterEach
     public void tearDown() {
-        webDriver.quit();
+        if (accessToken != null) {
+            apiUser.deleteUserStep(accessToken);
+        }
+        if (webDriver != null) {
+            webDriver.quit();
+        }
     }
 }

@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static constants.TestConstants.BASE_URL;
+
 public class NavigationPage {
-    final String url = "https://stellarburgers.education-services.ru/";
+
     private final WebDriver webDriver;
 
     private final By personalAccount = By.xpath("//a[@class='AppHeader_header__link__3D_hX' and @href='/account']");
@@ -24,7 +26,7 @@ public class NavigationPage {
     }
 
     public NavigationPage open() {
-        webDriver.get(url);
+        webDriver.get(BASE_URL);
         return this;
     }
 

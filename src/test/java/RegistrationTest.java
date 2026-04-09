@@ -1,30 +1,47 @@
 import factoryBrowser.Browser;
-import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import pom.RegistrationPage;
-import user.AppConfig;
+import random.UserFactory;
+import user.*;
 
 import java.time.Duration;
 import java.util.Map;
 
+
+
 public class RegistrationTest {
     private WebDriver webDriver;
     private AppConfig appConfig;
+    private ApiUser apiUser = new ApiUser();
+    private User user;
+    private String accessToken;
+    private String randomName;
+    private String randomEmail;
+    private String randomPassword;
+    private String randomNegativePassword;
+
 
     @BeforeEach
-    public void SetUP() {
+    public void setUP() {
         String browser = System.getProperty("browser", "chrome");
         appConfig = ConfigFactory.create(AppConfig.class, Map.of("env", browser));
-        RestAssured.baseURI= "https://stellarburgers.education-services.ru";
+
 
         webDriver = new Browser().getWebDriver(browser);
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        this.user = UserFactory.createRandom();
+
+        this.randomName = user.getName();
+        this.randomEmail = user.getEmail();
+        this.randomPassword = user.getPassword();
+        this.randomNegativePassword = user.getNegativePassword();
 
     }
 
@@ -35,13 +52,16 @@ public class RegistrationTest {
         registrationPage.open()
                 .clickUserAccount()
                 .clickButtonRegister()
-                .enterNameInput("прааприа")
-                .enterEmailInput("dfg5пппwqt@mail.ru")
-                .enterPasswordInput("dgfnn559246")
+                .enterNameInput(randomName)
+                .enterEmailInput(randomEmail)
+                .enterPasswordInput(randomPassword)
                 .clickButtonLoginSignInForm()
                 .textTextLogin();
 
-
+        UserCreds creds = new UserCreds(randomEmail, randomPassword);
+        Response loginResponse = apiUser.loginUserStep(creds);
+        accessToken = loginResponse.as(UserLoginResponse.class).getAccessToken();
+        System.out.println(loginResponse.body().asString());
     }
 
     @Test
@@ -51,9 +71,9 @@ public class RegistrationTest {
         registrationPage.open()
                 .clickUserAccount()
                 .clickButtonRegister()
-                .enterNameInput("Юлия")
-                .enterEmailInput("dfg5wqt@mail.ru")
-                .enterPasswordInput("dgf")
+                .enterNameInput(randomName)
+                .enterEmailInput(randomEmail)
+                .enterPasswordInput(randomNegativePassword)
                 .clickButtonLoginSignInForm()
                 .textErrorMessage();
 
@@ -61,6 +81,11 @@ public class RegistrationTest {
 
     @AfterEach
     public void tearDown() {
-        webDriver.quit();
+        if (accessToken != null) {
+            apiUser.deleteUserStep(accessToken);
+        }
+        if (webDriver != null) {
+            webDriver.quit();
+        }
     }
 }

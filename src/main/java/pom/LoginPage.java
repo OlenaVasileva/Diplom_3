@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static constants.TestConstants.BASE_URL;
+
 public class LoginPage {
-    private final String url = "https://stellarburgers.education-services.ru/";
+
     private final WebDriver webDriver;
 
 
@@ -24,7 +26,7 @@ public class LoginPage {
     }
 
     public LoginPage open() {
-        webDriver.get(url);
+        webDriver.get(BASE_URL);
         return this;
     }
 
